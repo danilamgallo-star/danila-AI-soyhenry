@@ -1,0 +1,57 @@
+.room-detail {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.room-header {
+  margin-bottom: 20px;
+}
+
+.room-header h1 {
+  margin-bottom: 10px;
+}
+
+.room-type {
+  color: #666;
+  font-size: 18px;
+  text-transform: capitalize;
+}
+
+.room-image-large {
+  font-size: 150px;
+  text-align: center;
+  padding: 40px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.room-specs {
+  line-height: 2;
+}
+
+.booking-form h2 {
+  margin-bottom: 20px;
+}
+
+.total-price {
+  background: #e7f3ff;
+  padding: 20px;
+  border-radius: 8px;
+  margin: 20px 0;
+  text-align: center;
+}
+
+.total-price h3 {
+  color: #007bff;
+  font-size: 28px;
+}
+
+@media (max-width: 768px) {
+  .room-detail {
+    grid-template-columns: 1fr;
+  }
+}

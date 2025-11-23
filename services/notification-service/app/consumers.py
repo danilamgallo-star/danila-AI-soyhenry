@@ -4,7 +4,7 @@ from .config import settings
 from .email_service import send_email, send_sms
 
 def callback(ch, method, properties, body):
-    """Procesar mensajes que llegan de RabbitMQ"""
+    """Process incoming messages from RabbitMQ"""
     try:
         message = json.loads(body)
         event_type = message.get("event_type")
@@ -27,75 +27,75 @@ def callback(ch, method, properties, body):
         ch.basic_nack(delivery_tag=method.delivery_tag)
 
 def handle_payment_success(data):
-    """Cuando el pago sale bien, mandar emails"""
+    """Handle payment success event"""
     booking_id = data.get("booking_id")
-    # TODO: Sacar el email del usuario de la BD
+    # TODO: Get user email from database
     user_email = "user@example.com"
     
     send_email(
         to=user_email,
-        subject="Pago confirmado",
-        body=f"Tu pago para la reserva #{booking_id} fue procesado exitosamente."
+        subject="Payment Confirmed",
+        body=f"Your payment for booking #{booking_id} has been processed successfully."
     )
     
     send_sms(
         to="+1234567890",
-        message=f"Pago confirmado para reserva #{booking_id}"
+        message=f"Payment confirmed for booking #{booking_id}"
     )
 
 def handle_booking_confirmed(data):
-    """Cuando se confirma la reserva"""
+    """Handle booking confirmed event"""
     booking_id = data.get("booking_id")
     user_email = "user@example.com"
     
     send_email(
         to=user_email,
-        subject="Reserva confirmada",
-        body=f"Tu reserva #{booking_id} fue confirmada. Los detalles del check-in te llegarán pronto."
+        subject="Booking Confirmed",
+        body=f"Your booking #{booking_id} has been confirmed. Check-in details will be sent soon."
     )
 
 def handle_booking_cancelled(data):
-    """Cuando se cancela"""
+    """Handle booking cancelled event"""
     booking_id = data.get("booking_id")
     user_email = "user@example.com"
     
     send_email(
         to=user_email,
-        subject="Reserva cancelada",
-        body=f"Tu reserva #{booking_id} fue cancelada."
+        subject="Booking Cancelled",
+        body=f"Your booking #{booking_id} has been cancelled."
     )
 
 def handle_payment_refunded(data):
-    """Cuando se hace un reembolso"""
+    """Handle payment refunded event"""
     payment_id = data.get("payment_id")
     user_email = "user@example.com"
     
     send_email(
         to=user_email,
-        subject="Reembolso procesado",
-        body=f"Tu reembolso para el pago #{payment_id} fue procesado."
+        subject="Refund Processed",
+        body=f"Your refund for payment #{payment_id} has been processed."
     )
 
 def start_consumer():
-    """Empezar a escuchar mensajes de RabbitMQ"""
+    """Start consuming messages from RabbitMQ"""
     connection = pika.BlockingConnection(pika.URLParameters(settings.RABBITMQ_URL))
     channel = connection.channel()
     
-    # Crear los exchanges
+    # Declare exchanges
     channel.exchange_declare(exchange='payment_events', exchange_type='topic')
     channel.exchange_declare(exchange='booking_events', exchange_type='topic')
     
-    # Crear cola
+    # Declare queue
     channel.queue_declare(queue='notification_queue', durable=True)
     
-    # Conectar cola a los exchanges
+    # Bind queue to exchanges
     channel.queue_bind(exchange='payment_events', queue='notification_queue', routing_key='payment.*')
     channel.queue_bind(exchange='booking_events', queue='notification_queue', routing_key='booking.*')
     
-    # Empezar a escuchar
+    # Start consuming
     channel.basic_consume(queue='notification_queue', on_message_callback=callback)
     
-    print("Esperando mensajes...")
+    print("Notification Service: Waiting for messages...")
     channel.start_consuming()
 
 if __name__ == "__main__":
