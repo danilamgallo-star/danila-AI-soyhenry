@@ -413,8 +413,8 @@ Las imágenes van en `/docs/ui/`. Para generarlas vas a Uizard, creas proyecto c
 ```
 📁 docs/
   📁 ui/
-    📄 01-login-register.png
-    📄 02-rsearch.png
+    📄 https://github.com/danilamgallo-star/hotel-reservation-microservices/blob/main/docs/ui/01-login-register.png
+    📄 https://github.com/danilamgallo-star/hotel-reservation-microservices/blob/main/docs/ui/02-search.png
 ```
 
 ## Stack tecnológico
